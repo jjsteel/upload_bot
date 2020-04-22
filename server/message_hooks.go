@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
-	"github.com/mattermost/mattermost-server/v5/services/filesstore"
 )
 
+// MessageWillBePosted comment complience
 func (p *Plugin) MessageWillBePosted(c *plugin.Context, post *model.Post) (*model.Post, string) {
 	configuration := p.getConfiguration()
 	channel, _ := p.API.GetChannel(post.ChannelId)

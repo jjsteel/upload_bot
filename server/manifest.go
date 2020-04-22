@@ -16,7 +16,7 @@ const manifestStr = `
   "name": "Upload Bot",
   "description": "upload bot",
   "version": "0.1.0",
-  "min_server_version": "5.6.0",
+  "min_server_version": "5.21.0",
   "server": {
     "executables": {
       "linux-amd64": "server/dist/plugin-linux-amd64"
