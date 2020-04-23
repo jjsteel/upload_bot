@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/plugin"
+	"strings"
 )
 
 // MessageWillBePosted comment complience
@@ -21,7 +22,22 @@ func (p *Plugin) MessageWillBePosted(c *plugin.Context, post *model.Post) (*mode
 			}
 			for _, f := range post.FileIds {
 				file, _ := p.API.GetFileInfo(f)
+				exist, err := p.API.FileExists(file.Path)
+				if err != nil {
+					return nil, err.DetailedError
+				}
+				if exist {
+					p.API.SendEphemeralPost(post.UserId, &model.Post{
+						UserId:    configuration.botID,
+						ChannelId: post.ChannelId,
+						Message:   "File: " + file.Path,
+					})
+				}
 				if err := p.API.RemoveFile(file.Path); err != nil {
+					return nil, err.DetailedError
+				}
+				sli := strings.LastIndex(file.Path, "/")
+				if err := p.API.RemoveDirectory(file.Path[:sli]); err != nil {
 					return nil, err.DetailedError
 				}
 			}
